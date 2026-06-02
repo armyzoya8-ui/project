@@ -1,7 +1,6 @@
 package com.example.kimstaste.navigation
 
 import androidx.compose.runtime.Composable
-import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
@@ -10,40 +9,35 @@ import androidx.navigation.navArgument
 import com.example.kimstaste.ui.screens.*
 
 @Composable
-fun KimstasteNavGraph(navController: NavController) {
-    // NavHost requires a NavHostController
-    val navHostController = navController as NavHostController
-
+fun KimstasteNavGraph(navController: NavHostController) {
     NavHost(
-        navController = navHostController,
+        navController = navController,
         startDestination = Screen.Splash.route
     ) {
-        // Splash Screen
         composable(Screen.Splash.route) {
             Splashscreen(navController)
         }
 
-        // Login Screen
         composable(Screen.Login.route) {
             LoginScreen(navController)
         }
 
-        // Signup Screen
         composable(Screen.Signup.route) {
             SignupScreen(navController)
         }
 
-        // Home Screen
         composable(Screen.Home.route) {
-            // Homescreen(navController)
+            Homescreen(navController)
         }
 
-        // Profile Screen
+        composable(Screen.ForgotPassword.route) {
+            ForgotPasswordScreen(navController)
+        }
+
         composable(Screen.Profile.route) {
-            // profileScreen(navController)
+            ProfileScreen(navController)
         }
 
-        // Upload Media Route
         composable(
             route = Screen.UploadMedia.route + "/{mediaId}",
             arguments = listOf(
@@ -54,7 +48,6 @@ fun KimstasteNavGraph(navController: NavController) {
             // MediaDetailScreen(navController, mediaId)
         }
 
-        // Edit Media Route
         composable(
             route = Screen.EditMedia.route + "/{mediaId}",
             arguments = listOf(
