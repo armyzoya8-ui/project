@@ -98,7 +98,7 @@ fun SignupScreen(navController: NavController) {
             Spacer(modifier = Modifier.height(32.dp))
 
             Button(
-                onClick = { navController.navigate(Screen.Home.route) },
+                onClick = { navController.navigate(Screen.Signup.route) },
                 modifier = Modifier.fillMaxWidth().height(50.dp),
                 colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFD4AF37)),
                 shape = RoundedCornerShape(12.dp)
@@ -111,6 +111,7 @@ fun SignupScreen(navController: NavController) {
             TextButton(onClick = { navController.navigate(Screen.Login.route) }) {
                 Text("Already have an account? Log In", color = Color(0xFFD4AF37))
             }
+
         }
     }
 }

@@ -84,7 +84,7 @@ fun ForgotPasswordScreen(navController: NavController) {
                     shape = RoundedCornerShape(16.dp),
                     colors = ButtonDefaults.buttonColors(containerColor = goldColor)
                 ) {
-                    Text("Send Instructions", fontSize = 18.sp, fontWeight = FontWeight.Bold)
+                    Text("Send", fontSize = 18.sp, fontWeight = FontWeight.Bold)
                 }
             }
         }

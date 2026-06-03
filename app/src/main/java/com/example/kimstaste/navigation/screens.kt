@@ -12,6 +12,7 @@ sealed class Screen(val route: String) {
     object Profile : Screen(route = "profile_screen")
     object UploadMedia : Screen(route = "upload_media")
     object EditMedia : Screen(route = "edit_media")
+    object MemberCard : Screen(route = "member_card")
 
     // Sub-Details Flow
     object MemberScreen : Screen(route = "member_screen/{itemId}") {

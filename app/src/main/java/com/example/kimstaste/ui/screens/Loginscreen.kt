@@ -20,6 +20,8 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.kimstaste.navigation.Screen
 
+
+
 @Composable
 fun LoginScreen(navController: NavController) {
     var email by remember { mutableStateOf("") }
@@ -57,7 +59,7 @@ fun LoginScreen(navController: NavController) {
             )
             
             Text(
-                text = "Please sign in to continue",
+                text = "Please Log in to continue",
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
             )
@@ -112,7 +114,7 @@ fun LoginScreen(navController: NavController) {
                 shape = RoundedCornerShape(16.dp),
                 colors = ButtonDefaults.buttonColors(containerColor = goldColor)
             ) {
-                Text("Sign In", fontSize = 18.sp, fontWeight = FontWeight.Bold)
+                Text("Log in", fontSize = 18.sp, fontWeight = FontWeight.Bold)
             }
 
             Spacer(modifier = Modifier.height(24.dp))
@@ -124,6 +126,10 @@ fun LoginScreen(navController: NavController) {
             TextButton(onClick = { navController.navigate(Screen.ForgotPassword.route) }) {
                 Text("Forgot Password?", color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f))
             }
+            Spacer(modifier = Modifier.height(24.dp))
+
+
+
         }
     }
 }
