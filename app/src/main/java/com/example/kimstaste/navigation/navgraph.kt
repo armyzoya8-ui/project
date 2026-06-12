@@ -37,6 +37,10 @@ fun KimstasteNavGraph(navController: NavHostController) {
         composable(Screen.Profile.route) {
             ProfileScreen(navController)
         }
+
+        composable(Screen.Booking.route) {
+            BookingScreen(navController)
+        }
         
         composable(Screen.MemberCard.route) {
             // We can retrieve the name from previous backstack entry if passed via savedStateHandle

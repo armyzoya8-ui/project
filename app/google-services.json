@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "622702951285",
+    "project_id": "mediahub-56e8c",
+    "storage_bucket": "mediahub-56e8c.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:622702951285:android:886b2f6c7a946844e7313c",
+        "android_client_info": {
+          "package_name": "com.example.kimstaste"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDH09VNiLtErd664E8T5niW6hBwLmVq8Qo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

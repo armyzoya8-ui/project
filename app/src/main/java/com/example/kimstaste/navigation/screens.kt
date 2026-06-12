@@ -8,7 +8,7 @@ sealed class Screen(val route: String) {
     object ForgotPassword : Screen(route = "forgot_password")
     object Home : Screen(route = "home_screen")
     object Booking : Screen(route = "booking_screen")
-    object MyStay : Screen(route = "mystay_screen")
+
     object Profile : Screen(route = "profile_screen")
     object UploadMedia : Screen(route = "upload_media")
     object EditMedia : Screen(route = "edit_media")
