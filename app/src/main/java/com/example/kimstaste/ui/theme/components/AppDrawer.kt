@@ -10,9 +10,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
-import com.example.kimstaste.viewmodel.UserProfile
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.ui.graphics.Color
+import com.example.kimstaste.viewmodel.UserProfile
 
 
 @Composable

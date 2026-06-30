@@ -41,22 +41,14 @@ fun KimstasteNavGraph(navController: NavHostController) {
         composable(Screen.Booking.route) {
             BookingScreen(navController)
         }
+
+        composable(Screen.UploadMedia.route) {
+            UploadMediaScreen(navController)
+        }
         
         composable(Screen.MemberCard.route) {
-            // We can retrieve the name from previous backstack entry if passed via savedStateHandle
-            // or just use a default for now. A better way is to pass it as an argument.
             val name = navController.previousBackStackEntry?.savedStateHandle?.get<String>("userName") ?: "Kims Guest"
             MemberCardScreen(navController, name)
-        }
-
-        composable(
-            route = Screen.UploadMedia.route + "/{mediaId}",
-            arguments = listOf(
-                navArgument("mediaId") { type = NavType.StringType }
-            )
-        ) { backStackEntry ->
-            val mediaId = backStackEntry.arguments?.getString("mediaId") ?: ""
-            // MediaDetailScreen(navController, mediaId)
         }
 
         composable(
@@ -66,7 +58,7 @@ fun KimstasteNavGraph(navController: NavHostController) {
             )
         ) { backStackEntry ->
             val mediaId = backStackEntry.arguments?.getString("mediaId") ?: ""
-            // EditMediaScreen(navController, mediaId)
+            EditMediaScreen(navController, mediaId)
         }
     }
 }

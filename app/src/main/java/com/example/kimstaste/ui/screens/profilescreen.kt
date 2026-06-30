@@ -1,6 +1,8 @@
 package com.example.kimstaste.ui.screens
 
-import androidx.compose.foundation.BorderStroke
+import android.net.Uri
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -16,30 +18,60 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.kimstaste.navigation.Screen
+import com.example.kimstaste.ui.theme.components.AppBottomBar
+import com.example.kimstaste.viewmodel.AuthViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ProfileScreen(navController: NavController) {
-    // State for security gate and profile data
-    var isUnlocked by remember { mutableStateOf(false) }
-    var passwordInput by remember { mutableStateOf("") }
-    var passwordError by remember { mutableStateOf(false) }
-
-    // User details state
-    var name by remember { mutableStateOf("Kims Guest") }
-    var email by remember { mutableStateOf("guest@kimstaste.com") }
-    var phone by remember { mutableStateOf("+254 700 000 000") }
-
+fun ProfileScreen(
+    navController: NavController,
+    authViewModel: AuthViewModel = viewModel()
+) {
     // Luxury Theme Colors
     val goldColor = Color(0xFFD4AF37)
     val darkBg = Color(0xFF1A1A1A)
     val cardBg = Color(0xFF2D2D2D)
+
+    // Collect profile data from ViewModel
+    val currentProfile by authViewModel.currentProfile.collectAsState()
+
+    // State for security gate
+    var isUnlocked by remember { mutableStateOf(false) }
+    var passwordInput by remember { mutableStateOf("") }
+    var passwordError by remember { mutableStateOf(false) }
+
+    // User details state (initialized with current profile if available)
+    var name by remember { mutableStateOf("") }
+    var email by remember { mutableStateOf("") }
+    var phone by remember { mutableStateOf("") }
+    var suitePassword by remember { mutableStateOf("") }
+
+    // Media Picker Launcher for profile picture or just general media access
+    val launcher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.GetContent()
+    ) { uri: Uri? ->
+        // Here you would typically upload the selected media
+        // uri?.let { /* handle upload */ }
+    }
+
+    // Update local state when profile is loaded
+    LaunchedEffect(currentProfile) {
+        currentProfile?.let {
+            name = it.fullname
+            email = it.email
+            phone = it.phone
+            suitePassword = it.suitePassword
+        }
+    }
 
     if (!isUnlocked) {
         // --- SECURE ACCESS GATEWAY ---
@@ -62,6 +94,7 @@ fun ProfileScreen(navController: NavController) {
                     modifier = Modifier.size(80.dp)
                 )
                 Spacer(modifier = Modifier.height(24.dp))
+                @Suppress("DEPRECATION")
                 Text(
                     text = "GUEST SECURITY",
                     color = goldColor,
@@ -114,8 +147,9 @@ fun ProfileScreen(navController: NavController) {
                 
                 Button(
                     onClick = { 
-                        // Simplified password check for demo purposes
-                        if (passwordInput == "admin") {
+                        // Verify against custom password OR master override "admin"
+                        val actualPassword = currentProfile?.suitePassword ?: "admin"
+                        if (passwordInput == actualPassword || passwordInput == "admin") {
                             isUnlocked = true 
                         } else {
                             passwordError = true
@@ -132,6 +166,7 @@ fun ProfileScreen(navController: NavController) {
                 
                 Spacer(modifier = Modifier.height(16.dp))
                 
+                @Suppress("DEPRECATION")
                 TextButton(onClick = { navController.popBackStack() }) {
                     Text("Return", color = Color.White.copy(alpha = 0.4f))
                 }
@@ -153,7 +188,17 @@ fun ProfileScreen(navController: NavController) {
                     colors = TopAppBarDefaults.centerAlignedTopAppBarColors(containerColor = darkBg)
                 )
             },
-            containerColor = darkBg
+            containerColor = darkBg,
+            bottomBar = {
+                AppBottomBar(
+                    currentRoute = "profile_screen",
+                    onDashboardClick = { navController.navigate(Screen.Home.route) },
+                    onBookingClick = { navController.navigate(Screen.Booking.route) },
+                    onMembershipClick = { navController.navigate(Screen.MemberCard.route) },
+                    onUploadClick = { navController.navigate(Screen.UploadMedia.route) },
+                    onProfileClick = { /* Already here */ }
+                )
+            }
         ) { padding ->
             Column(
                 modifier = Modifier
@@ -188,7 +233,7 @@ fun ProfileScreen(navController: NavController) {
                         modifier = Modifier
                             .size(42.dp)
                             .border(4.dp, darkBg, CircleShape)
-                            .clickable { /* Trigger Image Picker logic */ }
+                            .clickable { launcher.launch("image/* video/*") }
                     ) {
                         Icon(
                             imageVector = Icons.Default.PhotoCamera,
@@ -211,7 +256,7 @@ fun ProfileScreen(navController: NavController) {
                     cardBg = cardBg
                 )
                 
-                Spacer(modifier = Modifier.height(20.dp))
+                Spacer(modifier = Modifier.height(16.dp))
 
                 ProfileDetailItem(
                     label = "Email Address",
@@ -222,7 +267,7 @@ fun ProfileScreen(navController: NavController) {
                     cardBg = cardBg
                 )
 
-                Spacer(modifier = Modifier.height(20.dp))
+                Spacer(modifier = Modifier.height(16.dp))
 
                 ProfileDetailItem(
                     label = "Contact Number",
@@ -233,15 +278,26 @@ fun ProfileScreen(navController: NavController) {
                     cardBg = cardBg
                 )
 
-                Spacer(modifier = Modifier.weight(1f))
+                Spacer(modifier = Modifier.height(16.dp))
 
-                Text("WELCOME TO KIMSFAM", fontWeight = FontWeight.ExtraBold, fontSize = 16.sp, color = darkBg)
+                // NEW: SUITE PASSWORD FIELD
+                ProfileDetailItem(
+                    label = "Suite Password",
+                    value = suitePassword,
+                    onValueChange = { suitePassword = it },
+                    icon = Icons.Default.Lock,
+                    goldColor = goldColor,
+                    cardBg = cardBg,
+                    isPassword = true
+                )
 
                 Spacer(modifier = Modifier.weight(1f))
 
                 Button(
                     onClick = { 
-                        // Pass the name to the member card screen using savedStateHandle
+                        // Update profile in Firebase
+                        authViewModel.updateProfile(name, email, phone, suitePassword)
+                        // Also pass name to member card as before
                         navController.currentBackStackEntry?.savedStateHandle?.set("userName", name)
                         navController.navigate(Screen.MemberCard.route)
                     },
@@ -252,7 +308,6 @@ fun ProfileScreen(navController: NavController) {
                     colors = ButtonDefaults.buttonColors(containerColor = goldColor),
                     shape = RoundedCornerShape(18.dp)
                 ) {
-
                     Text("SAVE CHANGES", fontWeight = FontWeight.ExtraBold, fontSize = 16.sp, color = darkBg)
                 }
             }
@@ -267,7 +322,8 @@ fun ProfileDetailItem(
     onValueChange: (String) -> Unit,
     icon: androidx.compose.ui.graphics.vector.ImageVector,
     goldColor: Color,
-    cardBg: Color
+    cardBg: Color,
+    isPassword: Boolean = false
 ) {
     Column(modifier = Modifier.fillMaxWidth()) {
         Text(
@@ -281,6 +337,7 @@ fun ProfileDetailItem(
             value = value,
             onValueChange = onValueChange,
             leadingIcon = { Icon(icon, contentDescription = null, tint = goldColor) },
+            visualTransformation = if (isPassword) PasswordVisualTransformation() else androidx.compose.ui.text.input.VisualTransformation.None,
             modifier = Modifier.fillMaxWidth(),
             shape = RoundedCornerShape(16.dp),
             singleLine = true,
